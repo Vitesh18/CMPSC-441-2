@@ -29,6 +29,18 @@ from lab2.cities_n_routes import get_randomly_spread_cities, get_routes
 # TODO: Demo blittable surface helper function
 
 ''' Create helper functions here '''
+def draw_cities(screen, city_locations, city_names):
+    for location, name in zip(city_locations, city_names):
+        pygame.draw.circle(screen, (255, 0, 0), location, 5)
+        font = pygame.font.Font(None, 24)
+        text = font.render(name, True, (255, 255, 255))
+        screen.blit(text, (location[0] + 5, location[1] + 5))
+
+def draw_routes(screen, routes, city_locations_dict):
+    for route in routes[:10]:  
+        start_pos = city_locations_dict[route[0]]
+        end_pos = city_locations_dict[route[1]]
+        pygame.draw.line(screen, (0, 255, 0), start_pos, end_pos, 1)
 
 if __name__ == "__main__":
     pygame.init()
@@ -46,6 +58,8 @@ if __name__ == "__main__":
     routes = []
 
     ''' Setup cities and routes in here'''
+    city_locations = get_randomly_spread_cities((width, height), len(city_names))
+    routes = get_routes(city_names)
 
     city_locations_dict = {name: location for name, location in zip(city_names, city_locations)}
     random.shuffle(routes)
@@ -59,8 +73,10 @@ if __name__ == "__main__":
         screen.fill(black)
         screen.blit(pygame_surface, (0, 0))
 
-        ''' draw cities '''
+        
 
         ''' draw first 10 routes '''
+        draw_cities(screen, city_locations, city_names)
+        draw_routes(screen, routes, city_locations_dict)
 
         pygame.display.flip()
