@@ -50,7 +50,8 @@ def run_turn(currentGame, player, opponent):
 
 def run_pygame_combat(combat_surface, screen, player_sprite):
     currentGame = Combat()
-    player = PyGameHumanCombatPlayer("Legolas")
+    #player = PyGameHumanCombatPlayer("Legolas")
+    player = PyGameAICombatPlayer("AI Player")
     """ Add a line below that will reset the player object
     to an instance of the PyGameAICombatPlayer class"""
 
