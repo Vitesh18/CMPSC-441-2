@@ -74,6 +74,22 @@ def run_episodes(n_episodes):
         Return the action values as a dictionary of dictionaries where the keys are states and 
             the values are dictionaries of actions and their values.
     '''
+    action_returns = defaultdict(lambda: defaultdict(list))
+
+    for _ in range(n_episodes): 
+        player = PyGameRandomCombatPlayer("Player")
+        opponent = PyGameRandomCombatPlayer("Opponent")
+        
+        history = run_random_episode(player, opponent)
+        episode_returns = get_history_returns(history)
+        
+        for state, actions in episode_returns.items():
+            for action, reward in actions.items():
+                action_returns[state][action].append(reward)
+
+    action_values = {}
+    for state, actions in action_returns.items():
+        action_values[state] = {action: np.mean(rewards) for action, rewards in actions.items()}
 
     return action_values
 
