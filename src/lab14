@@ -1,0 +1,15 @@
+from ollama_python import Ollama
+import numpy as np
+from sklearn.metrics.pairwise import cosine_similarity
+
+ollama = Ollama(model="http://localhost:8000") 
+paragraph = "It was a good idea. At least, they all thought it was a good idea at the time. Hindsight would reveal that in reality, it was an unbelievably terrible idea, but it would take another week for them to understand that. Right now, at this very moment. they all agreed that it was the perfect course of action for the current situation."
+sentences = paragraph.split(". ")
+embeddings = {sent: ollama.embeddings([sent])[0] for sent in sentences}
+query = input("Enter your query: ")
+query_embedding = ollama.embeddings([query])[0]
+similarities = {sent: cosine_similarity([embeddings[sent]], [query_embedding])[0][0] for sent in sentences}
+top_sentences = sorted(similarities, key=similarities.get, reverse=True)[:3]
+prompt = f"CONTEXT:\n{' '.join(top_sentences)}\n\nQUERY:\n{query}\n\nRESPONSE:"
+response = ollama.generate(prompt)
+print(response)
