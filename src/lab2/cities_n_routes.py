@@ -6,6 +6,12 @@ will generate a bunch of cities and all possible routes between them.
 '''
 import random
 import itertools
+import math
+import sys
+from pathlib import Path
+
+sys.path.append(str((Path(__file__) / ".." / "..").resolve().absolute()))
+from lab14.lab14 import global_journal
 
 def get_randomly_spread_cities(size, n_cities):
     """
@@ -18,7 +24,17 @@ def get_randomly_spread_cities(size, n_cities):
     :return: A list of tuples, each representing a city, with random x and y coordinates.
     """
     # Consider the condition where x size and y size are different
-    pass
+    global_journal.log("Starting to spread cities")
+    global_journal.log("Finished spreading cities")
+    #return [(random.randint(0, size[0]-1), random.randint(0, size[1]-1)) for _ in range(n_cities)]
+    cities = []
+    min_distance = 20
+    while len(cities) < n_cities:
+        new_city = (random.randint(0, size[0]-1), random.randint(0, size[1]-1))
+        if all(math.hypot(new_city[0]-existing[0], new_city[1]-existing[1]) >= min_distance for existing in cities):
+            cities.append(new_city)
+    return cities
+    
 
 def get_routes(city_names):
     """
@@ -29,7 +45,10 @@ def get_routes(city_names):
     :return: A list of tuples representing all possible links between cities/ pairs of cities, 
             each item in the list (a link) represents a route between two cities.
     """
-    pass
+    global_journal.log("Calculating routes")
+    global_journal.log("Routes calculated")
+    return list(itertools.combinations(city_names, 2))
+
 
 
 # TODO: Fix variable names
