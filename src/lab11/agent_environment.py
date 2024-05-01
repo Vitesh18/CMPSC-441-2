@@ -1,18 +1,17 @@
 import sys
 import pygame
 import random
-from sprite import Sprite
+from pathlib import Path
+sys.path.append(str((Path(__file__) / ".." / "..").resolve().absolute()))
+
+from lab11.sprite import Sprite
 from pygame_combat import run_pygame_combat
 from pygame_human_player import PyGameHumanPlayer
 from landscape import get_landscape, get_combat_bg
 from pygame_ai_player import PyGameAIPlayer
-
-from pathlib import Path
-
-sys.path.append(str((Path(__file__) / ".." / "..").resolve().absolute()))
-
 from lab2.cities_n_routes import get_randomly_spread_cities, get_routes
-
+from lab3.travel_cost import get_route_cost
+from lab11.landscape import get_elevation
 
 pygame.font.init()
 game_font = pygame.font.SysFont("Comic Sans MS", 15)
@@ -45,7 +44,7 @@ def displayCityNames(city_locations, city_names):
         screen.blit(text_surface, city_locations[i])
 
 
-class State:
+class State:    
     def __init__(
         self,
         current_city,
@@ -65,6 +64,7 @@ class State:
 
 if __name__ == "__main__":
     size = width, height = 640, 480
+    game_map = get_elevation(size)
     black = 1, 1, 1
     start_city = 0
     end_city = 9
@@ -96,12 +96,12 @@ if __name__ == "__main__":
 
     player_sprite = Sprite(sprite_path, cities[start_city])
 
-    #player = PyGameHumanPlayer()
-    player = PyGameAIPlayer(len(city_names))
+    player = PyGameHumanPlayer()
 
     """ Add a line below that will reset the player variable to 
     a new object of PyGameAIPlayer class."""
-
+    player = PyGameAIPlayer()
+    player.money = 100
     state = State(
         current_city=start_city,
         destination_city=start_city,
@@ -115,14 +115,26 @@ if __name__ == "__main__":
         action = player.selectAction(state)
         if 0 <= int(chr(action)) <= 9:
             if int(chr(action)) != state.current_city and not state.travelling:
+                state.destination_city = int(chr(action))
                 start = cities[state.current_city]
                 state.destination_city = int(chr(action))
                 destination = cities[state.destination_city]
                 player_sprite.set_location(cities[state.current_city])
                 state.travelling = True
-                print(
-                    "Travelling from", state.current_city, "to", state.destination_city
-                )
+                route_coordinate = (start, destination)
+                travel_cost = get_route_cost(route_coordinate, game_map)
+                if player.money >= travel_cost:
+                    player.money -= travel_cost
+                    state.travelling = True
+                    print(f"Travelling from {state.current_city} to {state.destination_city}, Cost: {travel_cost}")
+                else:
+                    print("Cannot afford the travel cost.")
+                    continue  # Skip the rest of the loop to prompt for another action
+
+                if player.money <=0:
+                    print("You have run out of money and lost the game!")
+                    break  # Exit the game loop if player is bankrupt
+
 
         screen.fill(black)
         screen.blit(landscape_surface, (0, 0))
