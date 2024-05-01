@@ -21,41 +21,43 @@ sys.path.append(str((Path(__file__) / ".." / ".." / "..").resolve().absolute()))
 
 from src.lab5.landscape import elevation_to_rgba
 from src.lab5.landscape import get_elevation
+from lab14.lab14 import global_journal
+
 
 def game_fitness(cities, idx, elevation, size):
-    fitness = 0.0001  # Do not return a fitness of 0, it will mess up the algorithm.
+    fitness = 1  # Do not return a fitness of 0, it will mess up the algorithm.
     """
     Create your fitness function here to fulfill the following criteria:
     1. The cities should not be under water
     2. The cities should have a realistic distribution across the landscape
     3. The cities may also not be on top of mountains or on top of each other
     """
-
+    
     # Convert city indices to 2D positions
     city_positions = np.array(list(map(lambda x: [int(x / size[0]), int(x % size[1])], cities)))
 
     # Criterion 1: Cities should not be underwater.
     for city in city_positions:
-        if elevation[city[0], city[1]] < 0.03:  # Assuming elevation scale 0 (sea level) to 1 (highest)
-            fitness -= 1  # Penalize underwater cities.
+        if elevation[city[0], city[1]] < 0.3:  # Assuming elevation scale 0 (sea level) to 1 (highest)
+            fitness -= 0.01  # Penalize underwater cities.
         else:
-            fitness += 1  # Reward cities above water.
+            fitness += 0.01  # Reward cities above water.
 
     # Criterion 2: Cities should have a realistic distribution.
     for i in range(len(city_positions)):
         for j in range(i + 1, len(city_positions)):
             distance = np.linalg.norm(city_positions[i] - city_positions[j])
             if distance < 10:  # Cities should not be closer than 10 units. Change as per your scale.
-                fitness -= 1  # Penalize cities too close to each other.
+                fitness -= 0.01  # Penalize cities too close to each other.
             else:
-                fitness += 1  # Reward properly spaced cities.
+                fitness += 0.01  # Reward properly spaced cities.
 
     # Criterion 3: Cities should not be on top of mountains.
     for city in city_positions:
         if elevation[city[0], city[1]] > 0.8:  # Assuming 0.8 as the 'mountain' threshold
-            fitness -= 1  # Penalize cities on mountains.
+            fitness -= 0.01  # Penalize cities on mountains.
         else:
-            fitness += 1  # Reward cities not on mountains.
+            fitness += 0.01  # Reward cities not on mountains.
 
     return fitness
 
@@ -70,6 +72,7 @@ def setup_GA(fitness_fn, n_cities, size):
     :param size: The size of the grid
     :return: The fitness function and the GA instance.
     """
+    global_journal.info("Genetic algorithm for city placement started")
     num_generations = 100
     num_parents_mating = 10
 
@@ -102,7 +105,7 @@ def setup_GA(fitness_fn, n_cities, size):
         mutation_type=mutation_type,
         mutation_percent_genes=mutation_percent_genes,
     )
-
+    global_journal.info("Genetic algorithm completed")
     return fitness_fn, ga_instance
 
 
@@ -135,6 +138,7 @@ def show_cities(cities, landscape_pic, cmap="gist_earth"):
     plt.show()
 
 
+
 if __name__ == "__main__":
     print("Initial Population")
 
@@ -143,9 +147,10 @@ if __name__ == "__main__":
     elevation = get_elevation(size)
     """ initialize elevation here from your previous code"""
     # normalize landscape
-    elevation = np.array(elevation)
+    elevation = np.array(elevation) 
     elevation = (elevation - elevation.min()) / (elevation.max() - elevation.min())
     landscape_pic = elevation_to_rgba(elevation)
+    
 
     # setup fitness function and GA
     fitness = lambda cities, idx: game_fitness(
