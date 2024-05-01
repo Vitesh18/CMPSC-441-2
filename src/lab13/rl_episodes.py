@@ -22,7 +22,6 @@ from lab11.pygame_combat import PyGameComputerCombatPlayer
 
 from lab11.turn_combat import CombatPlayer
 from lab12.episode import run_episode
-from lab14.lab14 import global_journal
 
 from collections import defaultdict
 import random
@@ -80,7 +79,6 @@ def run_episodes(n_episodes):
             action_returns[observation][player1_action].append(reward_player1)
             # Store rewards for player 2
             action_returns[observation][player2_action].append(reward_player2)
-            global_journal.debug(f"Observation: {observation}, Actions: {player1_action}, {player2_action}")  # Log the actions
 
 
     # Calculate average rewards for each action in each state
