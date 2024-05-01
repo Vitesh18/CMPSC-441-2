@@ -9,6 +9,11 @@ A terrain is generated for you
 '''
 import numpy as np
 from bresenham import bresenham
+from pathlib import Path
+import sys
+
+sys.path.append(str((Path(__file__) / ".." / "..").resolve().absolute()))
+from lab14.lab14 import global_journal
 
 def get_route_cost(route_coordinate, game_map):
     """
@@ -42,7 +47,6 @@ def get_route_cost(route_coordinate, game_map):
     # Build a path from start to end that looks like [(0, 0), (1, 1), (2, 2), (3, 3), (4, 4), (5, 4)]
     return game_map[tuple(zip(*bresenham(*route_coordinate[0], *route_coordinate[1])))].sum()
 
-
 def route_to_coordinates(city_locations, city_names, routes):
     """ get coordinates of each of the routes from cities and city_names"""
     route_coordinates = []
@@ -55,6 +59,8 @@ def route_to_coordinates(city_locations, city_names, routes):
 
 def generate_terrain(map_size):
     """ generate a terrain map of size map_size """
+    global_journal.log("Generating terrain")
+    global_journal.log("Terrain generated")
     return np.random.rand(*map_size)
 
 
