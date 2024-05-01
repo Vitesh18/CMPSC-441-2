@@ -24,23 +24,29 @@ from landscape import get_landscape
 from pathlib import Path
 sys.path.append(str((Path(__file__)/'..'/'..').resolve().absolute()))
 from lab2.cities_n_routes import get_randomly_spread_cities, get_routes
-
+from lab14.lab14 import global_journal
 
 # TODO: Demo blittable surface helper function
 
 ''' Create helper functions here '''
 def draw_cities(screen, city_locations, city_names):
-    for location, name in zip(city_locations, city_names):
-        pygame.draw.circle(screen, (255, 0, 0), location, 5)
-        font = pygame.font.Font(None, 24)
-        text = font.render(name, True, (255, 255, 255))
-        screen.blit(text, (location[0] + 5, location[1] + 5))
+    try:
+        global_journal.debug("Starting to draw cities")
+        for location, name in zip(city_locations, city_names):
+            pygame.draw.circle(screen, (255, 0, 0), location, 5)
+            font = pygame.font.Font(None, 24)
+            text = font.render(name, True, (255, 255, 255))
+            screen.blit(text, (location[0] + 5, location[1] + 5))
+    except Exception as e:
+        global_journal.error(f"Error drawing cities: {e}")
 
 def draw_routes(screen, routes, city_locations_dict):
+    global_journal.debug("Starting to draw routes")
     for route in routes[:10]:  
         start_pos = city_locations_dict[route[0]]
         end_pos = city_locations_dict[route[1]]
         pygame.draw.line(screen, (0, 255, 0), start_pos, end_pos, 1)
+    global_journal.info(f"Routes drawn")
 
 if __name__ == "__main__":
     pygame.init()
