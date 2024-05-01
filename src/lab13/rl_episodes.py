@@ -19,8 +19,10 @@ from pathlib import Path
 sys.path.append(str((Path(__file__) / ".." / "..").resolve().absolute()))
 
 from lab11.pygame_combat import PyGameComputerCombatPlayer
+
 from lab11.turn_combat import CombatPlayer
 from lab12.episode import run_episode
+from lab14.lab14 import global_journal
 
 from collections import defaultdict
 import random
@@ -65,28 +67,23 @@ def get_history_returns(history):
 
 
 def run_episodes(n_episodes):
-    ''' Run 'n_episodes' random episodes and return the action values for each state-action pair.
-        Action values are calculated as the average return for each state-action pair over the 'n_episodes' episodes.
-        Use the get_history_returns function to get the returns for each state-action pair in each episode.
-        Collect the returns for each state-action pair in a dictionary of dictionaries where the keys are states and
-            the values are dictionaries of actions and their returns.
-        After all episodes have been run, calculate the average return for each state-action pair.
-        Return the action values as a dictionary of dictionaries where the keys are states and 
-            the values are dictionaries of actions and their values.
-    '''
     action_returns = defaultdict(lambda: defaultdict(list))
 
     for _ in range(n_episodes): 
         player = PyGameRandomCombatPlayer("Player")
         opponent = PyGameRandomCombatPlayer("Opponent")
         
-        history = run_random_episode(player, opponent)
-        episode_returns = get_history_returns(history)
+        episode_history = run_episode(player, opponent)
         
-        for state, actions in episode_returns.items():
-            for action, reward in actions.items():
-                action_returns[state][action].append(reward)
+        for observation, (player1_action, player2_action), (reward_player1, reward_player2) in episode_history:
+            # Store rewards for player 1
+            action_returns[observation][player1_action].append(reward_player1)
+            # Store rewards for player 2
+            action_returns[observation][player2_action].append(reward_player2)
+            global_journal.debug(f"Observation: {observation}, Actions: {player1_action}, {player2_action}")  # Log the actions
 
+
+    # Calculate average rewards for each action in each state
     action_values = {}
     for state, actions in action_returns.items():
         action_values[state] = {action: np.mean(rewards) for action, rewards in actions.items()}
@@ -115,8 +112,8 @@ def test_policy(policy):
 
 
 if __name__ == "__main__":
-    action_values = run_episodes(10000)
+    action_values = run_episodes(100)
     print(action_values)
     optimal_policy = get_optimal_policy(action_values)
     print(optimal_policy)
-    print(test_policy(optimal_policy))
+    # print(test_policy(optimal_policy))
