@@ -28,5 +28,5 @@ class PyGameAICombatPlayer(CombatPlayer):
     def weapon_selecting_strategy(self):
         # Randomly select a weapon
         self.weapon = random.randint(0, 2)  # Choose among 0 (Sword), 1 (Arrow), or 2 (Fire)
-        global_journal.debug(f"AI decided to use {self.weapon}")
+        global_journal.generate_text_entry(f"AI decided to use {self.weapon}")
         return self.weapon
