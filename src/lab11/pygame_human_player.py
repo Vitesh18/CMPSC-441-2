@@ -1,4 +1,7 @@
 import pygame
+import sys
+from pathlib import Path
+sys.path.append(str((Path(__file__) / ".." / "..").resolve().absolute()))
 from lab11.turn_combat import CombatPlayer
 
 
@@ -14,7 +17,7 @@ class PyGameHumanPlayer:
                 if ord("0") <= event.key <= ord("9"):
                     return event.key
         return ord(str(state.current_city))  # Not a safe operation for >10 cities
-
+    
 
 class PyGameHumanCombatPlayer(CombatPlayer):
     def __init__(self, name):
