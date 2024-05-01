@@ -34,7 +34,6 @@ def run_episode(player1, player2):
         # Players select their actions
         player1_action = player1.weapon_selecting_strategy()
         player2_action = player2.weapon_selecting_strategy()
-        global_journal.debug(f"Observation: {observation}, Actions: {player1_action}, {player2_action}")  # Log the actions
         # Apply the actions and update the game state
         currentGame.takeTurn(player1, player2)
         
@@ -50,10 +49,10 @@ def run_episode(player1, player2):
         else:
             reward_player1 = 0  # Draw, no reward
             reward_player2 = 0  # Draw, no reward
-        global_journal.debug(f"Result: Player 1 reward {reward_player1}, Player 2 reward {reward_player2}")
+        global_journal.generate_text_entry(f"Result: Player 1 reward {reward_player1}, Player 2 reward {reward_player2}")
         
         # Save the step to the episode history
         episode_history.append((observation, (player1_action, player2_action), (reward_player1, reward_player2)))
         
-    global_journal.info("RL training completed")
+    global_journal.generate_text_entry("RL training completed")
     return episode_history
