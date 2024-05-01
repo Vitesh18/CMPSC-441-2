@@ -72,7 +72,7 @@ def setup_GA(fitness_fn, n_cities, size):
     :param size: The size of the grid
     :return: The fitness function and the GA instance.
     """
-    global_journal.info("Genetic algorithm for city placement started")
+    global_journal.generate_text_entry("city placement started")
     num_generations = 100
     num_parents_mating = 10
 
@@ -105,7 +105,7 @@ def setup_GA(fitness_fn, n_cities, size):
         mutation_type=mutation_type,
         mutation_percent_genes=mutation_percent_genes,
     )
-    global_journal.info("Genetic algorithm completed")
+    global_journal.generate_text_entry("city placement ended")
     return fitness_fn, ga_instance
 
 
