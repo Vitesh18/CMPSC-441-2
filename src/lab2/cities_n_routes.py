@@ -24,8 +24,7 @@ def get_randomly_spread_cities(size, n_cities):
     :return: A list of tuples, each representing a city, with random x and y coordinates.
     """
     # Consider the condition where x size and y size are different
-    global_journal.log("Starting to spread cities")
-    global_journal.log("Finished spreading cities")
+    global_journal.generate_text_entry("Starting the process of randomly spreading cities across the map.")
     #return [(random.randint(0, size[0]-1), random.randint(0, size[1]-1)) for _ in range(n_cities)]
     cities = []
     min_distance = 20
@@ -33,6 +32,7 @@ def get_randomly_spread_cities(size, n_cities):
         new_city = (random.randint(0, size[0]-1), random.randint(0, size[1]-1))
         if all(math.hypot(new_city[0]-existing[0], new_city[1]-existing[1]) >= min_distance for existing in cities):
             cities.append(new_city)
+    global_journal.generate_text_entry("Finished spreading cities across the map successfully.")
     return cities
     
 
@@ -45,9 +45,10 @@ def get_routes(city_names):
     :return: A list of tuples representing all possible links between cities/ pairs of cities, 
             each item in the list (a link) represents a route between two cities.
     """
-    global_journal.log("Calculating routes")
-    global_journal.log("Routes calculated")
-    return list(itertools.combinations(city_names, 2))
+    global_journal.generate_text_entry("Calculating all possible routes between cities.")
+    routes = list(itertools.combinations(city_names, 2))
+    global_journal.generate_text_entry("Routes calculation completed.")
+    return routes
 
 
 
