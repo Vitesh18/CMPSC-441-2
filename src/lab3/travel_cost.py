@@ -59,8 +59,8 @@ def route_to_coordinates(city_locations, city_names, routes):
 
 def generate_terrain(map_size):
     """ generate a terrain map of size map_size """
-    global_journal.log("Generating terrain")
-    global_journal.log("Terrain generated")
+    global_journal.generate_text_entry("Generating terrain")
+    global_journal.generate_text_entry("Terrain generated")
     return np.random.rand(*map_size)
 
 
