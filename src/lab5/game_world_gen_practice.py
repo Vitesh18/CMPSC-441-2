@@ -30,23 +30,21 @@ from lab14.lab14 import global_journal
 
 ''' Create helper functions here '''
 def draw_cities(screen, city_locations, city_names):
-    try:
-        global_journal.debug("Starting to draw cities")
+        global_journal.generate_text_entry("Beginning the process of drawing cities on the map.")
         for location, name in zip(city_locations, city_names):
             pygame.draw.circle(screen, (255, 0, 0), location, 5)
             font = pygame.font.Font(None, 24)
             text = font.render(name, True, (255, 255, 255))
             screen.blit(text, (location[0] + 5, location[1] + 5))
-    except Exception as e:
-        global_journal.error(f"Error drawing cities: {e}")
+        global_journal.generate_text_entry("Successfully drew all cities on the map.")
 
 def draw_routes(screen, routes, city_locations_dict):
-    global_journal.debug("Starting to draw routes")
+    global_journal.generate_text_entry("Starting to visualize routes between cities.")
     for route in routes[:10]:  
         start_pos = city_locations_dict[route[0]]
         end_pos = city_locations_dict[route[1]]
         pygame.draw.line(screen, (0, 255, 0), start_pos, end_pos, 1)
-    global_journal.info(f"Routes drawn")
+    global_journal.info("Routes successfully drawn on the map.")
 
 if __name__ == "__main__":
     pygame.init()
