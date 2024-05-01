@@ -35,10 +35,13 @@ print("Accuracy of model: {}\n".format(sklearn_model.score(x_test, y_test)))
 
 
 """ Improve the model by normalizing the input data. """
+
 scaler = StandardScaler()
 x_train_scaled = scaler.fit_transform(x_train)
 x_test_scaled = scaler.transform(x_test)
 
-sklearn_model.fit(x_train_scaled, y_train)
+# Retrain the model on the normalized data
+sklearn_model.fit(x_train_scaled, y_train)  # Note that this reuses the sklearn_model variable
 
+# Accuracy after normalization
 print("Accuracy of improved model: {}\n".format(sklearn_model.score(x_test_scaled, y_test)))
