@@ -1,6 +1,8 @@
 import pygame
 import math
-
+import sys
+from pathlib import Path
+sys.path.append(str((Path(__file__) / ".." / "..").resolve().absolute()))
 
 def load_image(image_path):
     image = pygame.image.load(image_path).convert_alpha()
